@@ -9,7 +9,7 @@ from memtable import KeyDeletedError, KeyNotFoundError
 def test_crash_recovery_clean_writes(tmp_path):
     wal_path = str(tmp_path / "test.wal")
 
-    # --- "before crash" phase ---
+    # before crash phase
     tree = LSMTree(wal_path)
     tree.put("a", 1)
     tree.put("b", 2)
@@ -20,7 +20,7 @@ def test_crash_recovery_clean_writes(tmp_path):
     # just discard the object and let a new process pick up the WAL later
     del tree
 
-    # --- "after crash" phase ---
+    # after crash phase 
     recovered = LSMTree(wal_path)
 
     assert recovered.get("a") == 1
