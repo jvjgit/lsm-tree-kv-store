@@ -36,3 +36,14 @@ class Memtable:
 
     def size(self) -> int:
         return self._size
+
+    def items(self):
+        result = []
+        for key in self._data.keys():
+            value = self._data[key]
+            pair = (key,value)
+            result.append(pair)
+        return result
+
+    def is_tombstone(self, value: Any) -> bool:
+        return value is self._TOMBSTONE
