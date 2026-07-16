@@ -1,6 +1,6 @@
 from typing import Any
 import os 
-from memtable import Memtable
+from memtable import Memtable, KeyDeletedError, KeyNotFoundError
 from wal import WAL
 from sstable import SSTable
 
@@ -37,7 +37,25 @@ class LSMTree:
             self._flush()
 
     def get(self, key: str) -> Any:
-        return self._memtable.get(key)
+        try:
+            return self._memtable.get(key)
+        except KeyDeletedError:
+            raise 
+        except KeyNotFoundError:
+            pass 
+
+
+
+        for path in reversed(self._sstables):
+            sstable = SSTable(path)
+            try:
+                return sstable.get(key)
+            except KeyDeletedError:
+                raise
+            except KeyNotFoundError:
+                continue
+        
+        raise KeyNotFoundError(key)
     
     def _next_sstable_path(self) -> str:
         self._sstable_counter += 1
