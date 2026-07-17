@@ -32,11 +32,11 @@ def random_value(n: int) -> str:
     return "".join(random.choices(string.ascii_letters + string.digits, k=n))
 
 
-# ---------------------------------------------------------------------------
+
 # Baseline 1: naive in-place file store — one JSON file, rewritten on every
 # single write, to simulate the cost of random in-place updates (the thing
 # LSM-trees are specifically designed to avoid).
-# ---------------------------------------------------------------------------
+
 class NaiveInPlaceStore:
     def __init__(self, path: str) -> None:
         self.path = path
@@ -53,9 +53,9 @@ class NaiveInPlaceStore:
             os.fsync(f.fileno())
 
 
-# ---------------------------------------------------------------------------
+
 # Baseline 2: sqlite3 (stdlib) as a "real database" reference point.
-# ---------------------------------------------------------------------------
+
 class SqliteStore:
     def __init__(self, path: str) -> None:
         self.conn = sqlite3.connect(path)
